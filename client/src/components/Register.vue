@@ -1,21 +1,28 @@
 <template>
-  <div>
-    <h1>Register</h1>
+  <v-layout column>
+    <v-flex xs6 offset-xs3>
+      <div class="white elevation-2">
+        <v-toolbar flat dense class="cyan" dark>
+          <v-toolbar-title>Register</v-toolbar-title>
+        </v-toolbar>
 
-    <input
-      type="email"
-      name="email"
-      v-model="email"
-      placeholder="email" />
-    <input
-      type="password"
-      name="password"
-      v-model="password"
-      placeholder="password" />
-    <button
-      @click="register">
-      Register</button>
-  </div>
+        <div class="container">
+          <v-text-field
+            label="Email"
+            v-model="email" />
+          <v-text-field
+            label="Password"
+            v-model="password" />
+          <div class="error" v-html="error" />
+          <v-btn
+            dark
+            class="cyan"
+            @click="register">
+            Register</v-btn>
+        </div>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -24,16 +31,20 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      error: null
     }
   },
   methods: {
     async register () {
-      const response = await AuthService.register({
-        email: this.email,
-        password: this.password
-      })
-      console.log(response.data)
+      try {
+        await AuthService.register({
+          email: this.email,
+          password: this.password
+        })
+      } catch (error) {
+        this.error = error.response.data.error
+      }
     }
   }
 }
